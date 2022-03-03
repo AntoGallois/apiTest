@@ -11,14 +11,6 @@ module.exports = (sequelize, Sequelize) => {
       },
       lastName: {
         type: Sequelize.STRING
-      },
-      group: {
-        type: Sequelize.INTEGER
-      }
-    });
-    const Group = sequelize.define("group", {
-      name:{
-        type: Sequelize.STRING
       }
     });
     return User;

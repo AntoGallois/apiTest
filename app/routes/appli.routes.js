@@ -1,22 +1,20 @@
 module.exports = app => {
-    const auth = require('../middleware/auth');
-
-    const applis = require("../controllers/appli.controller.js");
+    const users = require("../controllers/user.controller.js");
+    const groups = require("../controllers/group.controller.js");
     var router = require("express").Router();
 
     // Create a new User
-    router.post("/subscribe", applis.create);
+    router.post("/subscribe", users.create);
     // Retrieve all Tutorials
-    router.get("/users", applis.findAllUsers);
+    router.get("/users", users.findAllUsers);
     // Match email and password
-    router.post("/login", applis.login);
-    // // Retrieve a single Tutorial with id
-    // router.get("/:id", tutorials.findOne);
-    // // Update a Tutorial with id
-    // router.put("/:id", tutorials.update);
-    // // Delete a Tutorial with id
-    // router.delete("/:id", tutorials.delete);
-    // // Delete all Tutorials
-    // router.delete("/", tutorials.deleteAll);
+    router.post("/login", users.login);
+    // Retrieve all Groups
+    router.get("/groups", groups.findAllGroups);
+    // Create a Group
+    router.post("/groups", groups.newGroup);
+    // Invite a user
+    router.post("/groups/:group_id/invite", groups.invite);
+
     app.use('/api', router);
   };

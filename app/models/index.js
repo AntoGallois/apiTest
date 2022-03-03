@@ -13,6 +13,18 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-db.appli = require("./appli.model.js")(sequelize, Sequelize);
-console.log(db.appli);
+db.users = require("./user.model.js")(sequelize, Sequelize);
+db.groups = require("./group.model.js")(sequelize, Sequelize);
+
+db.users.belongsToMany(db.groups, {
+  through: "user_group",
+  as:"users",
+  foreignKey: "user_id",
+});
+db.groups.belongsToMany(db.users, {
+  through: "user_group",
+  as:"groups",
+  foreignKey: "group_id",
+});
+
 module.exports = db;
