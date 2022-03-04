@@ -69,15 +69,9 @@ exports.invite = (req, res) => {
         const inviter = User.findByPk(authToken.userId);
         const invited = User.findOne({ where: { email: req.body.email } });
         const group = Group.findByPk(req.params.group_id);
+
         Promise.all([group, inviter, invited])
             .then(data => {
-                if (!data[2]){
-                    res.status(401).send({
-                      message:
-                        "Email does not exist."
-                    });
-                    return;
-                  };
                 if (!data[0]){
                     res.status(401).send({
                       message:
@@ -85,20 +79,36 @@ exports.invite = (req, res) => {
                     });
                     return;
                   };
-                data[0].addGroup(data[2]);
-                res.send({
-                    name:data[0].name,
-                    users:[{
-                        email: data[1].email,
-                        firstName: data[1].lastName,
-                        lastName: data[1].lastName
-                    },
-                    {
-                        email: data[2].email,
-                        firstName: data[2].lastName,
-                        lastName: data[2].lastName
-                    }]
-                });
+                data[0].hasGroup(data[1]).then(result => {
+                    if (!result){
+                        res.status(401).send({
+                            message:
+                                "You do not belong here."
+                            });
+                        return
+                    }
+                    if (!data[2]){
+                        res.status(401).send({
+                          message:
+                            "Email does not exist."
+                        });
+                        return;
+                      };
+                    data[0].addGroup(data[2]);
+                    res.send({
+                        name:data[0].name,
+                        users:[{
+                            email: data[1].email,
+                            firstName: data[1].firstName,
+                            lastName: data[1].lastName
+                        },
+                        {
+                            email: data[2].email,
+                            firstName: data[2].firstName,
+                            lastName: data[2].lastName
+                        }]
+                    });
+                })
             })
             .catch(err => {
                 res.status(500).send({
